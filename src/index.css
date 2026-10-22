@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "@fontsource/barlow-condensed/900.css";
+
+:root {
+  font-family: Arial, sans-serif;
+  color: #171411;
+  background: #f1e8d6;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.newspaper-display {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 900;
+  font-stretch: condensed;
+  line-height: 0.88;
+  letter-spacing: -0.025em;
+}
