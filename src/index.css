@@ -1,5 +1,7 @@
 @import "tailwindcss";
-@import "@fontsource/barlow-condensed/900.css";
+@import "@fontsource/barlow-condensed/700.css";
+@import "@fontsource/gloock/400.css";
+@import "@fontsource/special-elite/400.css";
 
 :root {
   font-family: Arial, sans-serif;
@@ -18,4 +20,22 @@ body {
   font-stretch: condensed;
   line-height: 0.88;
   letter-spacing: -0.025em;
+}
+
+.newspaper-masthead {
+  font-family: "Gloock", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.5rem, 8vw, 9rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+
+  width: 133.333%;
+  transform: scaleX(0.75);
+  transform-origin: left center;
+}
+.newspaper-typewriter {
+  font-family: "Special Elite", monospace;
+  font-weight: 400;
+  
 }
