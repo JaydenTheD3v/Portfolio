@@ -1,9 +1,6 @@
 import ComicPanel from "./ComicPanel";
 import NavBar from "./NavBar";
-import article1 from '../assets/article1.png';
-import article2 from '../assets/article2.png';
-import article3 from '../assets/article3.png';
-import article4 from '../assets/article4.png';
+
 import FeaturedArticles from "./FeaturedArticles";
 
 export default function NewspaperHero() {

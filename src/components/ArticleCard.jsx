@@ -16,7 +16,7 @@ export default function ArticleCard({title, description, image, href}) {
             
             {/* 2. Image & Button Container (Right Side) */}
             <div className="relative shrink-0 border border-[#171411]">
-                <img src={image} alt={title} className="h-[64px] w-[100px]
+                <img src={image} alt={title} className="w-[75px] h-[64px] w-[100px]
                     shrink-0 object-cover
                     border border-[#171411]" />
                 <a 
