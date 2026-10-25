@@ -25,17 +25,43 @@ body {
 .newspaper-masthead {
   font-family: "Gloock", Georgia, serif;
   font-weight: 400;
-  font-size: clamp(2.5rem, 8vw, 9rem);
+  font-size: clamp(2.5rem, 7vw, 8rem);
   line-height: 0.9;
   letter-spacing: -0.045em;
   white-space: nowrap;
-
   width: 133.333%;
   transform: scaleX(0.75);
   transform-origin: left center;
+}
+@media (max-width: 767px) {
+  .newspaper-masthead {
+    width: 100%;
+    transform: none;
+
+    font-size: clamp(2.5rem, 11vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+
+    white-space: normal;
+    text-wrap: balance;
+
+    padding: 0.5rem 0;
+  }
 }
 .newspaper-typewriter {
   font-family: "Special Elite", monospace;
   font-weight: 400;
   
+}
+
+.newspaper-scroll::-webkit-scrollbar{
+  height:8px;
+
+}
+.newspaper-scroll::-webkit-scrollbar-track{
+  background: #f1e8d6;
+}
+.newspaper-scroll::-webkit-scrollbar-thumb{
+  background: #171411;
+  border-radius: 4px;
 }
