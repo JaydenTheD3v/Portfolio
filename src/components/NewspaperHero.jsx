@@ -104,7 +104,7 @@ export default function NewspaperHero() {
       {/* Featured Inside Section */}
       <FeaturedArticles />
        
-      <footer className="flex justify-between border-t mt-[100px] border-black pt-4 text-xs uppercase tracking-wider">
+      <footer className="flex justify-between border-t mt-25 border-black pt-4 text-xs uppercase tracking-wider">
         <span>Engineering · Design · Security</span>
         <span>Scroll to Explore ↓</span>
       </footer>

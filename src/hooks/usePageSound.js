@@ -6,7 +6,7 @@ export default function usePageSound() {
 
   useEffect(() => {
     const audio = new Audio(
-      `${import.meta.env.BASE_URL}sounds/newspaper-flip.mp3`
+      `${import.meta.env.BASE_URL}Sounds/newspaper-flip.mp3`
     );
 
     audio.volume = 0.2;

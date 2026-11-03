@@ -39,11 +39,25 @@ export default function FeaturedArticles() {
   ];
   return (
       <section aria-label="Featured Articles" className=" border-b-4 border-double border-[#171411] py-2">
-            <div className="mt-[-15px]  flex flex-row items-center border-[#171411] w-full">
-              <div className="shrink-0 px-4 py-2 newspaper-display uppercase text-sm border-r-2 border-[#171411] hidden md:block mr-2 z-0">
-                <h1>FEATURED INSIDE:</h1>
+            <div className="-mt-3.75  flex flex-row items-center border-[#171411] w-full">
+                <div className="hidden shrink-0 border-r-2 border-[#171411] px-4 py-2 md:block">
+
+                <h2 className="newspaper-display text-sm uppercase">
+                    FEATURED INSIDE:
+                </h2>
+
                 <hr className="my-1 border-[#171411]" />
-              </div>
+
+                <button
+                    type="button"
+                    onClick={() => setSoundEnabled(!soundEnabled)}
+                    aria-pressed={soundEnabled}
+                    className="newspaper-typewriter cursor-pointer text-[10px] uppercase"
+                >
+                    SOUND: {soundEnabled ? "ON 🔊" : "OFF 🔇"}
+                </button>
+
+                </div>
               
       {/* 1. Parent Scroll Wrapper */}
             <div className="newspaper-scroll flex flex-row w-full overflow-x-auto snap-x snap-mandatory pb-4 md:pb-0">
@@ -51,6 +65,7 @@ export default function FeaturedArticles() {
                 
                   <div 
                     key={article.id} 
+                    onClick={playPageSound}
                     className="w-[85vw] shrink-0 snap-center md:w-auto md:flex-1 md:shrink-0"
                   >
                     {/* 2 & 3. Responsive Child Container */}

@@ -1,7 +1,7 @@
 export default function ArticleCard({title, description, image, href}) {
 
     return (
-        <article className="article-card group relative h-[76px] flex flex-row items-center justify-start gap-6 border-r-2 py-6 border-[#171411] pr-8 mr-4 pl-6 transition-all duration-500 ease-out motion-safe:hover:-translate-y-2 motion-safe:hover:scale-105 hover:z-10 cursor-pointer">
+        <article className="article-card group relative h-19 flex flex-row items-center justify-start gap-6 border-r-2 py-6 border-[#171411] pr-8 mr-4 pl-6 transition-all duration-500 ease-out motion-safe:hover:-translate-y-2 motion-safe:hover:scale-105 hover:z-10 cursor-pointer">
             
             {/* 1. Text Container (Left Side) */}
             <div className="min-w-0 flex-1">
@@ -16,7 +16,7 @@ export default function ArticleCard({title, description, image, href}) {
             
             {/* 2. Image & Button Container (Right Side) */}
             <div className="relative shrink-0 border border-[#171411]">
-                <img src={image} alt={title} className="w-[75px] h-[64px] w-[100px]
+                <img src={image} alt={title} className="h-16 w-25
                     shrink-0 object-cover
                     border border-[#171411]" />
                 <a 
