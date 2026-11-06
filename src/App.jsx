@@ -1,6 +1,6 @@
 import NewspaperHero from "./components/NewspaperHero";
 import ComicTransition from "./components/ComicTransition";
-
+import StudioScene from "./components/StudioScene";
 
 export default function App() {
   return (
@@ -8,6 +8,7 @@ export default function App() {
       
       <NewspaperHero />
       <ComicTransition />
+      
     </main>
   );
 }

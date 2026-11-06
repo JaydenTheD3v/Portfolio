@@ -1,0 +1,268 @@
+
+.living-studio {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #090512;
+  color: #f1e8d6;
+}
+
+.living-studio--embedded {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  min-height: 0;
+}
+
+.living-studio__viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* The artwork and SVGs share one coordinate system */
+.living-studio__artwork {
+  position: absolute;
+  width: max(100%, calc(100vh * 1983 / 793));
+  aspect-ratio: 1983 / 793;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.living-studio__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.living-studio__effects,
+.living-studio__hotspots {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.living-studio__effects {
+  z-index: 2;
+  pointer-events: none;
+}
+
+.living-studio__hotspots {
+  z-index: 3;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.studio-screen__target {
+  fill: transparent;
+  pointer-events: all;
+  cursor: pointer;
+  outline: none;
+}
+
+.studio-screen__target:focus-visible {
+  fill: rgba(255, 215, 120, 0.16);
+  stroke: #ffd778;
+  stroke-width: 5;
+}
+
+/* Monitor glow */
+.studio-screen__halo {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.studio-screen__light {
+  opacity: 0;
+  transition: opacity 300ms ease;
+  mix-blend-mode: screen;
+}
+
+.studio-screen.is-hovered .studio-screen__halo {
+  opacity: 0.12;
+}
+
+.studio-screen.is-hovered .studio-screen__light {
+  opacity: 0.12;
+}
+
+.studio-screen.is-active .studio-screen__halo {
+  opacity: 0.55;
+  animation: studio-screen-boot 650ms ease-in-out infinite alternate;
+}
+
+.studio-screen.is-active .studio-screen__light {
+  opacity: 0.4;
+  animation: studio-screen-boot 650ms ease-in-out infinite alternate;
+}
+
+@keyframes studio-screen-boot {
+  from { opacity: 0.15; }
+  to { opacity: 0.7; }
+}
+
+/* Coffee steam */
+.studio-steam__wisp {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: studio-steam-rise 4s ease-out infinite;
+}
+
+.studio-steam__wisp--two {
+  animation-delay: 1.3s;
+}
+
+.studio-steam__wisp--three {
+  animation-delay: 2.6s;
+}
+
+@keyframes studio-steam-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scaleX(0.85);
+  }
+  25% {
+    opacity: 0.3;
+  }
+  65% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-28px) scaleX(1.18);
+  }
+}
+
+/* Ambient lamp */
+.studio-lamp-light {
+  opacity: 0.75;
+  animation: studio-lamp-breathe 7s ease-in-out infinite;
+}
+
+@keyframes studio-lamp-breathe {
+  0%, 100% { opacity: 0.7; }
+  42% { opacity: 0.88; }
+  44% { opacity: 0.72; }
+  46% { opacity: 0.86; }
+  65% { opacity: 0.78; }
+}
+
+/* Rain */
+.studio-raindrop {
+  animation: studio-rain-fall linear infinite;
+}
+
+@keyframes studio-rain-fall {
+  from { transform: translateY(-120px); }
+  to { transform: translateY(460px); }
+}
+
+/* Boot notification */
+.living-studio__boot {
+  position: absolute;
+  z-index: 5;
+  top: 36%;
+  left: 66%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.8rem 1rem;
+  background: rgba(14, 6, 31, 0.92);
+  border: 1px solid #b879ff;
+  box-shadow: 0 0 30px rgba(167, 99, 255, 0.35);
+  color: #f1e8d6;
+  font: 700 0.7rem monospace;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.living-studio__boot-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d9adff;
+  animation: studio-boot-pulse 500ms infinite alternate;
+}
+
+@keyframes studio-boot-pulse {
+  from { opacity: 0.2; }
+  to { opacity: 1; }
+}
+
+/* Always-accessible project entry */
+.living-studio__controls {
+  position: absolute;
+  z-index: 6;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  pointer-events: none;
+  font: 700 0.72rem monospace;
+  letter-spacing: 0.12em;
+  text-shadow: 0 2px 6px #000;
+}
+
+.living-studio__controls button {
+  pointer-events: auto;
+  padding: 0.85rem 1rem;
+  border: 1px solid #b879ff;
+  background: rgba(14, 6, 31, 0.9);
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.living-studio__controls button:hover,
+.living-studio__controls button:focus-visible {
+  background: #522779;
+}
+
+.living-studio__controls button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (max-width: 700px) {
+  .living-studio__controls {
+    font-size: 0.58rem;
+  }
+
+  .living-studio__controls button {
+    padding: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-raindrop,
+  .studio-steam__wisp,
+  .studio-lamp-light,
+  .studio-screen.is-active .studio-screen__halo,
+  .studio-screen.is-active .studio-screen__light,
+  .living-studio__boot-dot {
+    animation: none;
+  }
+
+  .studio-raindrop,
+  .studio-steam__wisp {
+    opacity: 0;
+  }
+
+  .studio-screen__halo,
+  .studio-screen__light {
+    transition: none;
+  }
+}
