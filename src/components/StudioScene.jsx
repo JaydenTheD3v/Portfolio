@@ -1,28 +1,60 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ProjectCaseFiles from "./ProjectCaseFiles";
 import "./StudioScene.css";
 
 const imageUrl = `${import.meta.env.BASE_URL}images/kurator-origin.png`;
 
+const VIEWBOX = "0 0 1983 793";
+
+// MONITOR HOTSPOTS
+// These are your custom-aligned coordinates.
+// Keep adjusting them here if needed.
 const monitors = [
   {
     id: "left",
     label: "Open projects from the code monitor",
-    points: "1060,337 1290,319 1290,520 1060,531",
+    points:
+      "1100,545 1100,358 1330,331 1330,480 1220,472 1190,545",
   },
   {
     id: "center",
     label: "Open projects from the center monitor",
-    points: "1303,318 1573,280 1573,521 1303,521",
+    points:
+      "1350,327 1350,480 1445,490 1430,540 1620,538 1618,293",
   },
   {
     id: "right",
     label: "Open projects from the design monitor",
-    points: "1592,277 1765,241 1767,522 1592,518",
+    points:
+      "1645,288 1790,255 1780,535 1653,535",
   },
 ];
+
+// WINDOW RAIN MASKS
+// One source of truth for BOTH clipping and debug guides.
+// These are the coordinates you aligned previously.
+const windowRegions = [
+  "875,8 1160,34 1160,336 1080,340 1080,350 1050,350 1030,340 1020,320 960,320 910,180 900,180 875,150",
+  "1185,40 1325,55 1325,315 1185,330",
+];
+
+// Set to true whenever you want to see window outlines.
+const DEBUG_WINDOWS = false;
+
+// Precompute rain positions so they remain stable.
+const rainDrops = Array.from({ length: 38 }, (_, index) => ({
+  id: index,
+  x: 815 + ((index * 47) % 475),
+  y: ((index * 83) % 400) - 80,
+  width: index % 3 === 0 ? 1.7 : 1,
+  delay: -(index % 11) * 0.24,
+  duration: 1.8 + (index % 5) * 0.25,
+}));
+
+//cup steam
+const smokeUrl = `${import.meta.env.BASE_URL}images/studio/smoke.png`;
 
 export default function StudioScene({
   embedded = false,
@@ -31,7 +63,15 @@ export default function StudioScene({
   const [activeMonitor, setActiveMonitor] = useState(null);
   const [hoveredMonitor, setHoveredMonitor] = useState(null);
   const [showProjects, setShowProjects] = useState(false);
+
   const timerRef = useRef(null);
+
+  // Unique SVG IDs prevent conflicts if the studio
+  // is ever rendered more than once on the page.
+  const instanceId = useId().replace(/:/g, "");
+  const lampId = `${instanceId}-studio-lamp-light`;
+  const windowClipId = `${instanceId}-studio-window-clip`;
+  const blurId = `${instanceId}-studio-screen-blur`;
 
   const openMonitor = (id = "center") => {
     if (!interactive || activeMonitor || showProjects) return;
@@ -45,6 +85,7 @@ export default function StudioScene({
     timerRef.current = window.setTimeout(() => {
       setShowProjects(true);
       setActiveMonitor(null);
+      timerRef.current = null;
     }, reducedMotion ? 0 : 1400);
   };
 
@@ -68,93 +109,158 @@ export default function StudioScene({
     >
       <div className="living-studio__viewport">
         <div className="living-studio__artwork">
+          {/* ORIGINAL STUDIO ARTWORK */}
           <img
             className="living-studio__image"
             src={imageUrl}
             alt="The Kurator working in a purple-lit creative studio overlooking a nighttime city skyline"
           />
 
+          {/* ANIMATED EFFECTS */}
           <svg
             className="living-studio__effects"
-            viewBox="0 0 1983 793"
+            viewBox={VIEWBOX}
             preserveAspectRatio="none"
             aria-hidden="true"
           >
             <defs>
-              <radialGradient id="studio-lamp-light">
-                <stop offset="0%" stopColor="#ffd98b" stopOpacity=".45" />
-                <stop offset="55%" stopColor="#ffb64a" stopOpacity=".12" />
-                <stop offset="100%" stopColor="#ffb64a" stopOpacity="0" />
+              {/* Warm lamp gradient */}
+              <radialGradient id={lampId}>
+                <stop
+                  offset="0%"
+                  stopColor="#ffd98b"
+                  stopOpacity=".45"
+                />
+                <stop
+                  offset="55%"
+                  stopColor="#ffb64a"
+                  stopOpacity=".12"
+                />
+                <stop
+                  offset="100%"
+                  stopColor="#ffb64a"
+                  stopOpacity="0"
+                />
               </radialGradient>
 
-              <clipPath id="studio-window-clip">
-                <polygon points="814,8 1123,18 1123,307 1012,321 814,329" />
-                <polygon points="1152,22 1281,28 1281,289 1152,307" />
+              {/* Rain stays inside the window regions */}
+              <clipPath
+                id={windowClipId}
+                clipPathUnits="userSpaceOnUse"
+              >
+                {windowRegions.map((points, index) => (
+                  <polygon key={index} points={points} />
+                ))}
               </clipPath>
 
-              <filter id="studio-screen-blur" x="-50%" y="-50%" width="200%" height="200%">
+              {/* Soft monitor illumination */}
+              <filter
+                id={blurId}
+                x="-50%"
+                y="-50%"
+                width="200%"
+                height="200%"
+              >
                 <feGaussianBlur stdDeviation="12" />
               </filter>
+
+              {/* Coffee steam blur */}
+              <filter
+                id="studio-steam-blur"
+                x="-50%"
+                y="-50%"
+                width="200%"
+                height="200%"
+              >
+                <feGaussianBlur stdDeviation="4" />
+              </filter> 
             </defs>
 
-            {/* Rain confined to the window regions */}
-            <g clipPath="url(#studio-window-clip)" className="studio-rain">
-              {Array.from({ length: 38 }, (_, index) => {
-                const x = 815 + ((index * 47) % 475);
-                const y = (index * 83) % 400 - 80;
-
-                return (
-                  <line
-                    key={index}
-                    className="studio-raindrop"
-                    x1={x}
-                    y1={y}
-                    x2={x - 7}
-                    y2={y + 29}
-                    stroke="#d9b5ff"
-                    strokeWidth={index % 3 === 0 ? 1.7 : 1}
-                    opacity=".35"
-                    style={{
-                      animationDelay: `${-(index % 11) * 0.24}s`,
-                      animationDuration: `${1.8 + (index % 5) * 0.25}s`,
-                    }}
-                  />
-                );
-              })}
+            {/* WINDOW RAIN */}
+            {/* Clip the individual drops, not an animated group */}
+            <g
+              className="studio-rain"
+              clipPath={`url(#${windowClipId})`}
+            >
+              {rainDrops.map((drop) => (
+                <line
+                  key={drop.id}
+                  className="studio-raindrop"
+                  x1={drop.x}
+                  y1={drop.y}
+                  x2={drop.x - 7}
+                  y2={drop.y + 29}
+                  stroke="#d9b5ff"
+                  strokeWidth={drop.width}
+                  opacity=".35"
+                  style={{
+                    animationDelay: `${drop.delay}s`,
+                    animationDuration: `${drop.duration}s`,
+                  }}
+                />
+              ))}
             </g>
 
-            {/* Warm light gently fluctuates */}
+            {/* OPTIONAL WINDOW ALIGNMENT GUIDES */}
+            {DEBUG_WINDOWS && (
+              <g
+                fill="rgba(0, 255, 180, 0.12)"
+                stroke="#00ffb4"
+                strokeWidth="3"
+                pointerEvents="none"
+              >
+                {windowRegions.map((points, index) => (
+                  <polygon key={index} points={points} />
+                ))}
+              </g>
+            )}
+
+            {/* FLICKERING LAMP */}
             <ellipse
               className="studio-lamp-light"
               cx="260"
               cy="188"
               rx="300"
               ry="245"
-              fill="url(#studio-lamp-light)"
+              fill={`url(#${lampId})`}
             />
-
-            {/* Coffee steam: rises from the original mug */}
-            <g className="studio-steam" fill="none" stroke="#f9e2d0" strokeWidth="3" strokeLinecap="round">
-              <path className="studio-steam__wisp studio-steam__wisp--one" d="M779 548 C758 528 795 509 780 487 C765 466 798 453 787 430" />
-              <path className="studio-steam__wisp studio-steam__wisp--two" d="M806 547 C827 525 790 508 810 483 C829 462 800 448 814 425" />
-              <path className="studio-steam__wisp studio-steam__wisp--three" d="M833 548 C813 525 848 505 830 483 C817 462 845 449 835 432" />
+            {/* Realistic animated coffee steam */}
+            <g className="studio-smoke" aria-hidden="true">
+              {[0, 1, 2].map((index) => (
+                <image
+                  key={index}
+                  href={smokeUrl}
+                  x="785"
+                  y="420"
+                  width="110"
+                  height="155"
+                  preserveAspectRatio="xMidYMid meet"
+                  className={`studio-smoke__layer studio-smoke__layer--${index + 1}`}
+                />
+              ))}
             </g>
 
-            {/* Screen illumination follows the artwork */}
+            {/* MONITOR LIGHTING */}
             {monitors.map((monitor) => (
               <g
                 key={monitor.id}
                 className={[
                   "studio-screen",
-                  hoveredMonitor === monitor.id ? "is-hovered" : "",
-                  activeMonitor === monitor.id ? "is-active" : "",
-                ].join(" ")}
+                  hoveredMonitor === monitor.id
+                    ? "is-hovered"
+                    : "",
+                  activeMonitor === monitor.id
+                    ? "is-active"
+                    : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
               >
                 <polygon
                   points={monitor.points}
                   className="studio-screen__halo"
                   fill="#a763ff"
-                  filter="url(#studio-screen-blur)"
+                  filter={`url(#${blurId})`}
                 />
                 <polygon
                   points={monitor.points}
@@ -165,10 +271,10 @@ export default function StudioScene({
             ))}
           </svg>
 
-          {/* Accessible interactive targets aligned to the same SVG viewBox */}
+          {/* INTERACTIVE MONITOR HOTSPOTS */}
           <svg
             className="living-studio__hotspots"
-            viewBox="0 0 1983 793"
+            viewBox={VIEWBOX}
             preserveAspectRatio="none"
           >
             {monitors.map((monitor) => (
@@ -180,13 +286,24 @@ export default function StudioScene({
                 aria-label={monitor.label}
                 aria-disabled={!interactive}
                 className="studio-screen__target"
-                onMouseEnter={() => setHoveredMonitor(monitor.id)}
+                onMouseEnter={() => {
+                  if (interactive) {
+                    setHoveredMonitor(monitor.id);
+                  }
+                }}
                 onMouseLeave={() => setHoveredMonitor(null)}
-                onFocus={() => setHoveredMonitor(monitor.id)}
+                onFocus={() => {
+                  if (interactive) {
+                    setHoveredMonitor(monitor.id);
+                  }
+                }}
                 onBlur={() => setHoveredMonitor(null)}
                 onClick={() => openMonitor(monitor.id)}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
+                  if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                  ) {
                     event.preventDefault();
                     openMonitor(monitor.id);
                   }
@@ -195,8 +312,12 @@ export default function StudioScene({
             ))}
           </svg>
 
+          {/* MONITOR BOOT MESSAGE */}
           {activeMonitor && (
-            <div className="living-studio__boot" aria-live="polite">
+            <div
+              className="living-studio__boot"
+              aria-live="polite"
+            >
               <span className="living-studio__boot-dot" />
               ACCESSING CASE FILES...
             </div>
@@ -204,8 +325,10 @@ export default function StudioScene({
         </div>
       </div>
 
+      {/* PROJECTS BUTTON */}
       <div className="living-studio__controls">
         <span>CHAPTER 01 / THE ORIGIN</span>
+
         <button
           type="button"
           disabled={!interactive || Boolean(activeMonitor)}
@@ -215,6 +338,7 @@ export default function StudioScene({
         </button>
       </div>
 
+      {/* PROJECT CASE FILES MODAL */}
       {showProjects &&
         createPortal(
           <ProjectCaseFiles
